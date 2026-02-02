@@ -15,6 +15,7 @@ export const defaultProps = {
   thumbBorderColor: Colors.white,
   markerLineSize: 50,
   sliderWidth: 18,
+  unselectedSliderWidth: 18,
   sliderTrackColor: Colors.grey,
   lineColor: Colors.grey,
   lineSpace: 3,

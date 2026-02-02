@@ -201,6 +201,10 @@ export type RadialSliderProps = {
    */
   sliderWidth?: number;
   /**
+   * Unselected slider track width.
+   */
+  unselectedSliderWidth?: number;
+  /**
    * Color of unselected slider track.
    */
   sliderTrackColor?: string;
@@ -320,6 +324,10 @@ export type RadialSliderProps = {
    * Color for icon
    */
   stroke?: string;
+  /**
+   * Children
+   */
+  children?: React.ReactNode;
 };
 
 export interface ButtonProps {

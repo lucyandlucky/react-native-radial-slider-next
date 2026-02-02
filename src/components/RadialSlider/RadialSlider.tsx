@@ -26,6 +26,7 @@ const RadialSlider = (props: RadialSliderProps & typeof defaultProps) => {
     step,
     radius,
     sliderWidth,
+    unselectedSliderWidth,
     sliderTrackColor,
     linearGradient,
     thumbRadius,
@@ -47,6 +48,7 @@ const RadialSlider = (props: RadialSliderProps & typeof defaultProps) => {
     leftIconStyle,
     rightIconStyle,
     stroke,
+    children,
   } = props;
 
   const { panResponder, value, setValue, curPoint, currentRadian, prevValue } =
@@ -160,7 +162,7 @@ const RadialSlider = (props: RadialSliderProps & typeof defaultProps) => {
         {!isHideSlider && (
           <>
             <Path
-              strokeWidth={sliderWidth}
+              strokeWidth={unselectedSliderWidth ?? sliderWidth}
               stroke={sliderTrackColor}
               fill="none"
               strokeLinecap={strokeLinecap}
@@ -190,6 +192,7 @@ const RadialSlider = (props: RadialSliderProps & typeof defaultProps) => {
         )}
       </Svg>
       <View style={[styles.content, contentStyle]} pointerEvents="box-none">
+        {children}
         {/* Center Content */}
         {!isHideCenterContent && <CenterContent {...props} value={value} />}
         {/* Button Content */}
