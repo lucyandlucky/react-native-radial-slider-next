@@ -59,6 +59,7 @@ export type LineContentProps = {
   value?: number;
   markerValueInterval?: number;
   startAngle?: number;
+  lineLength?: number;
 };
 
 export type TextTailProps = {
@@ -211,6 +212,10 @@ export type RadialSliderProps = {
    * Space between each line.
    */
   lineSpace?: number;
+  /**
+   * Length of the lines.
+   */
+  lineLength?: number;
   /**
    * Gradient color of selected track.
    */

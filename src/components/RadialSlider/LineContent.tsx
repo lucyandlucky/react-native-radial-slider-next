@@ -1,4 +1,3 @@
-import { Platform } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import type { LineContentProps } from './types';
 import { G, Line } from 'react-native-svg';
@@ -9,7 +8,6 @@ const LineContent = (props: LineContentProps) => {
   const [markerPositionValues, setMarkerPositionValues] = useState([]);
   const {
     radius = 100,
-    linearGradient = [],
     thumbBorderWidth = 5,
     markerLineSize = 50,
     lineColor = Colors.grey,
@@ -21,6 +19,7 @@ const LineContent = (props: LineContentProps) => {
     fixedMarker = false,
     value,
     markerValueInterval = 10,
+    lineLength,
   } = props;
 
   const {
@@ -48,12 +47,6 @@ const LineContent = (props: LineContentProps) => {
   return (
     <G>
       {lines.map((_value, index) => {
-        const plusActiveIndex = index === 0 ? 0 : 1;
-        const activeIndex =
-          (((((value as number) - min) * 100) / (max - min)) * lineCount) /
-            100 +
-          plusActiveIndex;
-
         const getMarketIndex = () => {
           return markerPositionValues.map((val: number) => {
             return Math.floor(
@@ -110,19 +103,16 @@ const LineContent = (props: LineContentProps) => {
                       ? radius + markerLineSize
                       : radius + lineHeight
                   }
-                  x2={radius + lineHeight / 2 + isSpeedoMarker}
+                  x2={
+                    lineLength
+                      ? radius + lineHeight - lineLength
+                      : radius + lineHeight / 2 + isSpeedoMarker
+                  }
                   transform={`rotate(${
                     index + radialCircleLineRotation + angle
                   })`}
-                  strokeWidth={2}
-                  stroke={
-                    activeIndex > index ||
-                    (index === markIndex && !isHideMarkerLine)
-                      ? Platform.OS === 'web'
-                        ? linearGradient[0].color
-                        : 'url(#gradient)'
-                      : lineColor
-                  }
+                  strokeWidth={3}
+                  stroke={lineColor}
                   fill="none"
                   strokeLinecap="round"
                 />
