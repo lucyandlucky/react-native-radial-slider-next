@@ -191,7 +191,7 @@ const RadialSlider = (props: RadialSliderProps & typeof defaultProps) => {
               cx={curPoint.x + circleXPosition}
               cy={curPoint.y}
               r={thumbRadius + 20}
-              fill="transparent"
+              fill="pink"
               stroke="none"
               {...panResponder.panHandlers}
             />

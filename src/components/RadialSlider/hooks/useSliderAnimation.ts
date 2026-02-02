@@ -146,12 +146,15 @@ const useSliderAnimation = (props: RadialSliderAnimationHookProps) => {
   const panResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
-      onMoveShouldSetPanResponder: () => false,
+      onStartShouldSetPanResponderCapture: () => true,
+      onMoveShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponderCapture: () => true,
       onPanResponderGrant: handlePanResponderGrant,
       onPanResponderMove: handlePanResponderMove,
       onPanResponderRelease: handlePanResponderEnd,
       onPanResponderTerminationRequest: () => false,
       onPanResponderTerminate: handlePanResponderEnd,
+      onShouldBlockNativeResponder: () => true,
     })
   ).current;
 
