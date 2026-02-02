@@ -186,6 +186,13 @@ const RadialSlider = (props: RadialSliderProps & typeof defaultProps) => {
               fill={thumbColor || thumbBorderColor}
               stroke={thumbBorderColor}
               strokeWidth={thumbBorderWidth}
+            />
+            <Circle
+              cx={curPoint.x + circleXPosition}
+              cy={curPoint.y}
+              r={thumbRadius + 20}
+              fill="transparent"
+              stroke="none"
               {...panResponder.panHandlers}
             />
           </>
