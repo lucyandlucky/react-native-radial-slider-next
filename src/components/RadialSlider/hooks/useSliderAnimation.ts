@@ -177,7 +177,7 @@ const useSliderAnimation = (props: RadialSliderAnimationHookProps) => {
       onPanResponderTerminate: handlePanResponderEnd,
       onShouldBlockNativeResponder: () => true,
     });
-  }, [min, max]);
+  }, [min, max, disabled]);
 
   const currentRadian = getCurrentRadian(value, radianValue, max, min);
 
