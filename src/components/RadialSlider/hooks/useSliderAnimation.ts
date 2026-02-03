@@ -61,11 +61,11 @@ const useSliderAnimation = (props: RadialSliderAnimationHookProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props?.value]);
 
-  useEffect(() => {
-    onChange(value);
-    prevValue.current = value;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value]);
+  // useEffect(() => {
+  //   onChange(value);
+  //   prevValue.current = value;
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [value]);
 
   const handlePanResponderGrant = () => {
     moveStartValue = prevValue.current;
