@@ -136,11 +136,17 @@ const useSliderAnimation = (props: RadialSliderAnimationHookProps) => {
     onChange(prevValue.current);
   };
 
+  const onCompleteRef = useRef(onComplete);
+
+  useEffect(() => {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
+
   const handlePanResponderEnd = () => {
     if (disabled) {
       return;
     }
-    onComplete(prevValue.current);
+    onCompleteRef.current(prevValue.current);
   };
 
   const panResponder = useRef(
