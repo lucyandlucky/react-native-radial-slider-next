@@ -156,7 +156,22 @@ const useSliderAnimation = (props: RadialSliderAnimationHookProps) => {
       onPanResponderTerminate: handlePanResponderEnd,
       onShouldBlockNativeResponder: () => true,
     })
-  ).current;
+  );
+
+  useEffect(() => {
+    panResponder.current = PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onStartShouldSetPanResponderCapture: () => true,
+      onMoveShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponderCapture: () => true,
+      onPanResponderGrant: handlePanResponderGrant,
+      onPanResponderMove: handlePanResponderMove,
+      onPanResponderRelease: handlePanResponderEnd,
+      onPanResponderTerminationRequest: () => false,
+      onPanResponderTerminate: handlePanResponderEnd,
+      onShouldBlockNativeResponder: () => true,
+    });
+  }, [min, max]);
 
   const currentRadian = getCurrentRadian(value, radianValue, max, min);
 
@@ -171,7 +186,7 @@ const useSliderAnimation = (props: RadialSliderAnimationHookProps) => {
   );
 
   return {
-    panResponder,
+    panResponder: panResponder.current,
     prevValue,
     value,
     setValue,

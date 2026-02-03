@@ -1,5 +1,8 @@
 {
-  "extends": ["@react-native-community", "prettier"],
+  "extends": [
+    "@react-native-community",
+    "prettier"
+  ],
   "rules": {
     "prettier/prettier": [
       "error",
@@ -13,10 +16,14 @@
     ],
     "no-bitwise": 0,
     "prefer-const": "warn",
-    "no-console": ["error", { "allow": ["warn", "error"] }]
+    "@typescript-eslint/no-unused-vars": "off",
+    "react-hooks/exhaustive-deps": "off"
+    // "no-console": ["error", { "allow": ["warn", "error"] }]
   },
   "globals": {
     "JSX": "readonly"
   },
-  "plugins": ["prettier"]
+  "plugins": [
+    "prettier"
+  ]
 }
