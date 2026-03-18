@@ -9,10 +9,7 @@ import Svg, {
   NumberProp,
 } from 'react-native-svg';
 import { View, Platform, StyleSheet, Text } from 'react-native';
-import type {
-  RadialSliderDebugTouchConfig,
-  RadialSliderProps,
-} from './types';
+import type { RadialSliderDebugTouchConfig, RadialSliderProps } from './types';
 import { styles } from './styles';
 import { Colors } from '../../theme';
 import { useSliderAnimation, useRadialSlider } from './hooks';
@@ -169,7 +166,9 @@ const RadialSlider = (props: RadialSliderProps & typeof defaultProps) => {
   const useFullSliderPanArea = isHideButtons;
   const debugTouchConfig = resolveDebugTouchConfig(debugTouch);
   const debugOverlayEnabled = debugTouchConfig.overlay;
-  const gestureTrailPoints = gestureTrail.map(point => `${point.x},${point.y}`).join(' ');
+  const gestureTrailPoints = gestureTrail
+    .map(point => `${point.x},${point.y}`)
+    .join(' ');
   const debugPanelLines = [
     `touch: ${isTouching ? 'YES' : 'NO'}`,
     `capture: ${useFullSliderPanArea ? 'full-slider' : 'thumb-only'}`,
