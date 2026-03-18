@@ -1,3 +1,4 @@
+import type { RadialSliderDebugTouchConfig } from './types';
 import { Colors } from '../../theme';
 
 export const defaultProps = {
@@ -39,4 +40,5 @@ export const defaultProps = {
   fixedMarker: false,
   variant: 'default',
   markerValueInterval: 10,
+  debugTouch: false as RadialSliderDebugTouchConfig,
 };

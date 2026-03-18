@@ -13,6 +13,13 @@ export type Range<F extends number, T extends number> = Exclude<
   Enumerate<F>
 >;
 
+export type RadialSliderDebugTouchConfig =
+  | boolean
+  | {
+      overlay?: boolean;
+      logs?: boolean;
+    };
+
 type RadialSliderExcludedProps = {
   unitValueContentStyle?: StyleProp<ViewStyle>;
   markerCircleSize?: never;
@@ -107,6 +114,7 @@ export type RadialSliderAnimationHookProps = {
   value: number;
   variant?: string;
   startAngle?: number;
+  debugTouch?: RadialSliderDebugTouchConfig;
 };
 
 export type NeedleContentProps = {
@@ -328,6 +336,10 @@ export type RadialSliderProps = {
    * Children
    */
   children?: React.ReactNode;
+  /**
+   * Debug touch interactions with optional overlay and console logs.
+   */
+  debugTouch?: RadialSliderDebugTouchConfig;
 };
 
 export interface ButtonProps {

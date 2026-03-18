@@ -10,13 +10,48 @@ import {
   getRadianByValue,
   polarToCartesian,
 } from '../../../utils/commonHelpers';
-import type { RadialSliderAnimationHookProps } from '../types';
+import type {
+  RadialSliderAnimationHookProps,
+  RadialSliderDebugTouchConfig,
+} from '../types';
 import useRadialSlider from './useRadialSlider';
 
 interface StartCartesianProps {
   x: number;
   y: number;
 }
+
+interface SliderGestureDebugSnapshot {
+  phase: 'idle' | 'grant' | 'move' | 'release' | 'disabled';
+  dx: number;
+  dy: number;
+  rawValue: number;
+  resolvedValue: number;
+  radian: number;
+}
+
+const MAX_GESTURE_TRAIL_POINTS = 24;
+
+const resolveDebugTouchConfig = (debugTouch?: RadialSliderDebugTouchConfig) => {
+  if (debugTouch === true) {
+    return {
+      overlay: true,
+      logs: true,
+    };
+  }
+
+  if (!debugTouch) {
+    return {
+      overlay: false,
+      logs: false,
+    };
+  }
+
+  return {
+    overlay: !!debugTouch.overlay,
+    logs: !!debugTouch.logs,
+  };
+};
 
 const useSliderAnimation = (props: RadialSliderAnimationHookProps) => {
   const {
@@ -32,6 +67,7 @@ const useSliderAnimation = (props: RadialSliderAnimationHookProps) => {
     onComplete = () => {},
     startAngle = 270,
     variant = 'default',
+    debugTouch,
   } = props;
 
   let moveStartValue: number;
@@ -39,16 +75,76 @@ const useSliderAnimation = (props: RadialSliderAnimationHookProps) => {
   let moveStartRadian: number;
   const { radianValue } = useRadialSlider(props);
   const prevValue = useRef(props.value > min ? props.value : min);
+  const debugTouchConfig = resolveDebugTouchConfig(debugTouch);
+  const debugOverlayEnabled = debugTouchConfig.overlay;
+  const debugLogsEnabled = debugTouchConfig.logs;
+  const dragStartPointRef = useRef<StartCartesianProps | null>(null);
+  const currentTouchPointRef = useRef<StartCartesianProps | null>(null);
+  const gestureTrailRef = useRef<StartCartesianProps[]>([]);
 
   const [value, setValue] = useState(
     props?.value < min ? min : props?.value > max ? max : props?.value
   );
+  const [isTouching, setIsTouching] = useState(false);
+  const [dragStartPoint, setDragStartPoint] = useState<StartCartesianProps | null>(null);
+  const [currentTouchPoint, setCurrentTouchPoint] = useState<StartCartesianProps | null>(null);
+  const [gestureTrail, setGestureTrail] = useState<StartCartesianProps[]>([]);
+  const [debugSnapshot, setDebugSnapshot] = useState<SliderGestureDebugSnapshot>({
+    phase: 'idle',
+    dx: 0,
+    dy: 0,
+    rawValue: prevValue.current,
+    resolvedValue: prevValue.current,
+    radian: 0,
+  });
+
+  const syncDragStartPoint = (point: StartCartesianProps | null) => {
+    dragStartPointRef.current = point;
+    if (debugOverlayEnabled) {
+      setDragStartPoint(point);
+    }
+  };
+
+  const syncCurrentTouchPoint = (point: StartCartesianProps | null) => {
+    currentTouchPointRef.current = point;
+    if (debugOverlayEnabled) {
+      setCurrentTouchPoint(point);
+    }
+  };
+
+  const syncGestureTrail = (points: StartCartesianProps[]) => {
+    gestureTrailRef.current = points;
+    if (debugOverlayEnabled) {
+      setGestureTrail(points);
+    }
+  };
+
+  const appendGestureTrail = (point: StartCartesianProps) => {
+    const nextTrail = [
+      ...gestureTrailRef.current.slice(-(MAX_GESTURE_TRAIL_POINTS - 1)),
+      point,
+    ];
+
+    syncGestureTrail(nextTrail);
+  };
+
+  const logGestureDebug = (
+    phase: SliderGestureDebugSnapshot['phase'],
+    payload: Record<string, unknown>
+  ) => {
+    if (!debugLogsEnabled) {
+      return;
+    }
+    console.log(`[RadialSlider][${phase}]`, payload);
+  };
 
   useEffect(() => {
     if (max < props?.value) {
       setValue(max);
+      prevValue.current = max;
     } else if (min > props?.value) {
       setValue(min);
+      prevValue.current = min;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [max, min]);
@@ -84,6 +180,28 @@ const useSliderAnimation = (props: RadialSliderAnimationHookProps) => {
       startAngle,
       variant
     );
+    if (debugOverlayEnabled) {
+      setIsTouching(true);
+    }
+    syncDragStartPoint(startCartesian);
+    syncCurrentTouchPoint(startCartesian);
+    syncGestureTrail([startCartesian]);
+    if (debugOverlayEnabled) {
+      setDebugSnapshot({
+        phase: 'grant',
+        dx: 0,
+        dy: 0,
+        rawValue: prevValue.current,
+        resolvedValue: prevValue.current,
+        radian: moveStartRadian,
+      });
+    }
+    logGestureDebug('grant', {
+      disabled: !!disabled,
+      value: prevValue.current,
+      startPoint: startCartesian,
+      startRadian: moveStartRadian,
+    });
     return true;
   };
 
@@ -92,11 +210,22 @@ const useSliderAnimation = (props: RadialSliderAnimationHookProps) => {
     gestureState: PanResponderGestureState
   ) => {
     if (disabled) {
+      if (debugOverlayEnabled) {
+        setDebugSnapshot(prevState => ({
+          ...prevState,
+          phase: 'disabled',
+        }));
+      }
+      logGestureDebug('disabled', {
+        reason: 'move_blocked',
+        value: prevValue.current,
+      });
       return;
     }
     let { x, y } = startCartesian;
     x += gestureState.dx;
     y += gestureState.dy;
+    const touchPoint = { x, y };
 
     const radian = cartesianToPolar(
       x,
@@ -133,6 +262,27 @@ const useSliderAnimation = (props: RadialSliderAnimationHookProps) => {
         : roundedValue;
     });
 
+    syncCurrentTouchPoint(touchPoint);
+    appendGestureTrail(touchPoint);
+    if (debugOverlayEnabled) {
+      setDebugSnapshot({
+        phase: 'move',
+        dx: gestureState.dx,
+        dy: gestureState.dy,
+        rawValue: parseFloat(nValue.toFixed(1)),
+        resolvedValue: prevValue.current,
+        radian,
+      });
+    }
+    logGestureDebug('move', {
+      dx: Number(gestureState.dx.toFixed(2)),
+      dy: Number(gestureState.dy.toFixed(2)),
+      rawValue: parseFloat(nValue.toFixed(1)),
+      resolvedValue: prevValue.current,
+      touchPoint,
+      startPoint: dragStartPointRef.current,
+      radian: Number(radian.toFixed(4)),
+    });
     onChange(prevValue.current);
   };
 
@@ -143,9 +293,35 @@ const useSliderAnimation = (props: RadialSliderAnimationHookProps) => {
   }, [onComplete]);
 
   const handlePanResponderEnd = () => {
+    if (debugOverlayEnabled) {
+      setIsTouching(false);
+    }
     if (disabled) {
+      if (debugOverlayEnabled) {
+        setDebugSnapshot(prevState => ({
+          ...prevState,
+          phase: 'disabled',
+        }));
+      }
+      logGestureDebug('disabled', {
+        reason: 'end_blocked',
+        value: prevValue.current,
+      });
       return;
     }
+    if (debugOverlayEnabled) {
+      setDebugSnapshot(prevState => ({
+        ...prevState,
+        phase: 'release',
+        resolvedValue: prevValue.current,
+      }));
+    }
+    logGestureDebug('release', {
+      value: prevValue.current,
+      startPoint: dragStartPointRef.current,
+      endPoint: currentTouchPointRef.current,
+      trailLength: gestureTrailRef.current.length,
+    });
     onCompleteRef.current(prevValue.current);
   };
 
@@ -198,6 +374,11 @@ const useSliderAnimation = (props: RadialSliderAnimationHookProps) => {
     setValue,
     curPoint,
     currentRadian,
+    isTouching,
+    dragStartPoint,
+    currentTouchPoint,
+    gestureTrail,
+    debugSnapshot,
   };
 };
 
