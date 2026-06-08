@@ -30,6 +30,7 @@ export const defaultProps = {
   openingRadian: Math.PI / 3,
   disabled: false,
   isHideSlider: false,
+  isHideThumb: false,
   isHideTitle: false,
   isHideSubtitle: false,
   isHideValue: false,

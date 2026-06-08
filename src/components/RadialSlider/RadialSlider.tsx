@@ -63,6 +63,7 @@ const RadialSlider = (props: RadialSliderProps & typeof defaultProps) => {
     min,
     max,
     isHideSlider,
+    isHideThumb,
     isHideCenterContent,
     isHideTailText,
     isHideButtons,
@@ -255,14 +256,16 @@ const RadialSlider = (props: RadialSliderProps & typeof defaultProps) => {
                 startRadian - currentRadian >= Math.PI ? '1' : '0'
               },1,${curPoint.x},${curPoint.y}`}
             />
-            <Circle
-              cx={thumbX}
-              cy={curPoint.y}
-              r={thumbRadius}
-              fill={thumbColor || thumbBorderColor}
-              stroke={thumbBorderColor}
-              strokeWidth={thumbBorderWidth}
-            />
+            {!isHideThumb && (
+              <Circle
+                cx={thumbX}
+                cy={curPoint.y}
+                r={thumbRadius}
+                fill={thumbColor || thumbBorderColor}
+                stroke={thumbBorderColor}
+                strokeWidth={thumbBorderWidth}
+              />
+            )}
             {debugOverlayEnabled && (
               <Circle
                 cx={thumbX}

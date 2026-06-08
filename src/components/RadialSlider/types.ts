@@ -298,6 +298,10 @@ export type RadialSliderProps = {
    */
   isHideSlider?: boolean;
   /**
+   * If true, thumb/knob will be hidden.
+   */
+  isHideThumb?: boolean;
+  /**
    * If true, center content will be hidden.
    */
   isHideCenterContent?: boolean;
@@ -434,6 +438,7 @@ export type SpeedoMeterProps = RadialSliderProps & {
   subTitleStyle?: never;
   disabled?: never;
   isHideButtons?: never;
+  isHideThumb?: never;
   subTitle?: never;
   thumbColor?: never;
   thumbBorderWidth?: never;
