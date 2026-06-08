@@ -75,6 +75,7 @@ const SpeedoMeter = (
       ref.measure((_x: any, _y: any, _width: any, _height: any) => {});
     }
   };
+  const unitOffset = unit.length ? unit.length * 5 : 0;
 
   return (
     <View
@@ -146,7 +147,7 @@ const SpeedoMeter = (
               styles.centerText,
               unitValueContentStyle,
               // eslint-disable-next-line react-native/no-inline-styles
-              { marginLeft: unit?.length ? unit?.length * 5 : 10 },
+              { marginLeft: unitOffset },
             ]}
             isHideSubtitle
             isHideTitle

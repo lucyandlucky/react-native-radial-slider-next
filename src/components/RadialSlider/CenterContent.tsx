@@ -19,6 +19,7 @@ const CenterContent = (props: CenterContentProps) => {
     centerContentStyle,
     unitValueContentStyle,
   } = props;
+  const hasUnit = unit != null && unit !== '';
 
   return (
     <View style={[styles.hideCenterContent, centerContentStyle]}>
@@ -32,9 +33,11 @@ const CenterContent = (props: CenterContentProps) => {
           <Text style={[styles.valueText, styles.large_header, valueStyle]}>
             {value}
           </Text>
-          <Text style={[styles.valueUnit, styles.helperText, unitStyle]}>
-            {unit}
-          </Text>
+          {hasUnit && (
+            <Text style={[styles.valueUnit, styles.helperText, unitStyle]}>
+              {unit}
+            </Text>
+          )}
         </View>
       )}
       {!isHideSubtitle && (

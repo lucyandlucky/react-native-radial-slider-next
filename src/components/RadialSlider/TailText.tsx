@@ -6,20 +6,22 @@ import type { RadialSliderProps, TextTailProps } from './types';
 const TailText = (props: TextTailProps) => {
   const { unit, min, max } = props;
   const { startPoint, endPoint } = useRadialSlider(props as RadialSliderProps);
+  const getValueText = (value?: number) =>
+    unit != null && unit !== '' ? `${value} ${unit}` : `${value}`;
 
   return (
     <>
       <G transform={`translate(${-20}, ${40})`}>
         <SVGText fill={'#6B6F75'} fontSize={12}>
           <TSpan x={startPoint.x} y={startPoint.y} fontWeight={'bold'}>
-            {`${min} ${unit}`}
+            {getValueText(min)}
           </TSpan>
         </SVGText>
       </G>
       <G transform={`translate(${-10}, ${40})`}>
         <SVGText fill={'#6B6F75'} fontSize={12}>
           <TSpan x={endPoint.x} y={endPoint.y} fontWeight={'bold'}>
-            {`${max} ${unit}`}
+            {getValueText(max)}
           </TSpan>
         </SVGText>
       </G>

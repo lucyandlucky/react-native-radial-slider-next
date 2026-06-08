@@ -9,7 +9,7 @@ export const defaultProps = {
   value: 0,
   title: '',
   subTitle: 'Goal',
-  unit: 'kCal',
+  unit: '',
   thumbRadius: 18,
   thumbColor: Colors.blue,
   thumbBorderWidth: 5,
