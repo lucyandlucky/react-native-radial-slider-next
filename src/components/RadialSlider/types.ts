@@ -58,6 +58,7 @@ export type LineContentProps = {
   markerLineSize?: number;
   lineColor?: string;
   lineSpace?: number;
+  lineTrackGap?: number;
   min?: number;
   max?: number;
   markerValue?: number;
@@ -224,6 +225,10 @@ export type RadialSliderProps = {
    * Space between each line.
    */
   lineSpace?: number;
+  /**
+   * Gap between lines and slider track.
+   */
+  lineTrackGap?: number;
   /**
    * Length of the lines.
    */

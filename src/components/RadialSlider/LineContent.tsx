@@ -12,6 +12,7 @@ const LineContent = (props: LineContentProps) => {
     markerLineSize = 50,
     lineColor = Colors.grey,
     lineSpace = 3,
+    lineTrackGap = 0,
     min = 0,
     max = 100,
     markerValue,
@@ -88,6 +89,13 @@ const LineContent = (props: LineContentProps) => {
           ? adjustedSliderStartPoint
           : 90;
 
+        const lineStartPosition = radius + lineHeight + lineTrackGap;
+        const markerLineStartPosition =
+          radius + markerLineSize + lineTrackGap;
+        const lineEndPosition = lineLength
+          ? lineStartPosition - lineLength
+          : radius + lineHeight / 2 + isSpeedoMarker + lineTrackGap;
+
         return (
           <G key={index.toString()}>
             {(index % lineSpace === 0 ||
@@ -100,14 +108,10 @@ const LineContent = (props: LineContentProps) => {
                 <Line
                   x1={
                     index === markIndex && !isHideMarkerLine
-                      ? radius + markerLineSize
-                      : radius + lineHeight
+                      ? markerLineStartPosition
+                      : lineStartPosition
                   }
-                  x2={
-                    lineLength
-                      ? radius + lineHeight - lineLength
-                      : radius + lineHeight / 2 + isSpeedoMarker
-                  }
+                  x2={lineEndPosition}
                   transform={`rotate(${
                     index + radialCircleLineRotation + angle
                   })`}

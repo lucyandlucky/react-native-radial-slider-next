@@ -13,6 +13,7 @@ export const defaultSpeedoMeterProps = {
   sliderTrackColor: Colors.grey,
   lineColor: Colors.grey,
   lineSpace: 3,
+  lineTrackGap: 0,
   linearGradient: [
     { offset: '0%', color: Colors.skyBlue },
     { offset: '100%', color: Colors.darkBlue },
